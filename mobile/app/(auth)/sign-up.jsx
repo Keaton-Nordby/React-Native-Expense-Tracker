@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import { useSignUp } from '@clerk/clerk-expo'
-import { Link, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { styles } from '../../assets/styles/auth.styles'
 import { COLORS } from '../../constants/colors'
 import { Ionicons } from "@expo/vector-icons"
 import { Image } from 'expo-image'
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
+
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp()
@@ -30,7 +32,11 @@ export default function SignUpScreen() {
 
       setPendingVerification(true)
     } catch (err) {
-      console.error(err)
+      if (err.errors?.[0]?.code === "form_identifier_exists") {
+        setError("Email already in use. Please try another.");
+      } else {
+        setError("An error occured. Please try again.");
+      }
     }
   }
 
@@ -78,7 +84,13 @@ export default function SignUpScreen() {
   }
 
   return (
-    <View style={{flex: 1, alignItems: "center", justifyContent: "center "}}>
+    <KeyboardAwareScrollView 
+      style={{ flex: 1}}
+      contentContainerStyle={{ flexGrow: 1}}
+      enableOnAndroid={true}
+      enableAutomaticScroll={true}
+      extraScrollHeight={100}
+    >
         <View style={styles.container}>
             <Image source={require("../../assets/images/revenue-i1.png")} style={[styles.illustration, { borderRadius: 20}]}/>
       <Text style={styles.title}>Create Account</Text>
@@ -115,6 +127,6 @@ export default function SignUpScreen() {
         </TouchableOpacity>
       </View>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   )
 }
