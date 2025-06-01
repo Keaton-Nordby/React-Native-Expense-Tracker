@@ -3,12 +3,12 @@
 import { useCallback, useState } from "react";
 import { Alert } from "react-native";
 
-const API_URL = "http://localhost:5001/api"
+const API_URL = "http://10.0.2.2:5001/api";
 
 export const useTranactions = (userId) => {
     const [transactions, setTransactions] = useState([]);
     const [summary, setSummary] = useState({
-        balnace: 0,
+        balance: 0,
         income: 0,
         expenses: 0,
     });
@@ -22,7 +22,7 @@ export const useTranactions = (userId) => {
             const data = await response.json()
             setTransactions(data)
         } catch (error) {
-            console.error("Error fetching tranactions:", error)
+            console.error("Error fetching transaction:", error)
         }
     }, [userId]);
 
@@ -30,7 +30,7 @@ export const useTranactions = (userId) => {
         try {
             const response = await fetch(`${API_URL}/transactions/summary/${userId}`)
             const data = await response.json()
-            setTransactions(data)
+            setSummary(data)
         } catch (error) {
             console.error("Error fetching summary:", error)
         }

@@ -18,6 +18,8 @@ export default function Page() {
   console.log("transactions:", transactions);
   console.log("summary:", summary);
 
+  console.log("userid:", user.id)
+
   return (
     <View>
       <SignedIn>
