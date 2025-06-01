@@ -23,7 +23,7 @@ app.use("/api/transactions", transactionsRoute);
 console.log("my port:", process.env.PORT);
 
 initDB().then(() => {
-    app.listen(port, () => {
+    app.listen(port, '0.0.0.0', () => {
     console.log(`server is running on ${port}`);
     });
 });
