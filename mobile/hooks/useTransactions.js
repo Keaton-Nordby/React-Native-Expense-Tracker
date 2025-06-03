@@ -1,9 +1,17 @@
 // using a custom hook (simple but was good practice for myself)
 
 import { useCallback, useState } from "react";
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 
-const API_URL = "http://10.0.2.2:5001/api";
+
+
+const API_URL = __DEV__
+  ? Platform.OS === 'android'
+    ? 'http://10.0.2.2:5001/api'
+    : 'http://localhost:5001/api'
+  : 'https://react-native-expense-tracker.onrender.com/api';
+
+
 
 export const useTranactions = (userId) => {
     const [transactions, setTransactions] = useState([]);
@@ -37,17 +45,21 @@ export const useTranactions = (userId) => {
     }, [userId])
 
     const loadData = useCallback(async () => {
-        if (!userId) return;
+  if (!userId) return;
 
-        setIsLoading(true);
-        try {
-            await Promise.all([fetchTransactions(), fetchSummary()]);
-        } catch (error) {
-            console.error("Error loading data: ", error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [fetchTransactions, fetchSummary, userId])
+  setIsLoading(true);
+  try {
+    await Promise.all([
+      fetchTransactions().catch(e => console.error("Transactions error", e)),
+      fetchSummary().catch(e => console.error("Summary error", e))
+    ]);
+  } catch (error) {
+    console.error("Error loading data: ", error);
+  } finally {
+    setIsLoading(false);
+  }
+}, [fetchTransactions, fetchSummary, userId]);
+
 
     const deleteTransaction = async (id) => {
         try {
